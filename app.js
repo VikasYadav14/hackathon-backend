@@ -1,8 +1,10 @@
 const express = require('express');
 const app = express();
+require('dotenv').config();
 const http = require('http').createServer(app);
 const db = require('./config/dbConnection')
 const bodyParser = require('body-parser');
+
 const PORT = 5001;
 
 app.use(bodyParser.json())
