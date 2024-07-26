@@ -35,23 +35,11 @@ let gptResponse = {
         }
     },
 
-    analyzeImageWithOpenAI: async (imageUrl) => {
+    analyzeImageWithOpenAI: async (message) => {
         try {
             const response = await openai.chat.completions.create({
                 model: "gpt-4o",
-                messages: [
-
-                    {
-                        role: "user",
-                        content: [
-                            { type: "text", text: "What’s in this images?" },
-                            {
-                                type: "image_url",
-                                image_url: { url: imageUrl },
-                            },
-                        ],
-                    },
-                ],
+                messages: message,
             });
             return response.choices[0].message.content;
         } catch (error) {
