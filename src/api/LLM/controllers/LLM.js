@@ -1,24 +1,35 @@
-let { gptResponse } = require('../services/LLM');
+let { gptResponse, analyzeImageWithOpenAI } = require('../services/LLM');
+const { put } = require("@vercel/blob");
 
 const LLM = {
 
-    imageRec: async (req,res)=>{
+    imageRec: async (req, res) => {
         try {
 
-      
-            if (!req.files || req.files.length === 0) {
+            const files = req.files;
+            if (!files || files.length === 0) {
                 return res.status(400).send('No files uploaded.');
-              }
-              
-              // Extract URLs of all uploaded files
-              const fileUrls = req.files.map(file => file.location);
-              
-              return res.json({ urls: fileUrls });
+            }
 
-            
+            console.log(files);
+            // Extract URLs of all uploaded files
+            const fileUrls = await Promise.all(files.map(async file => {
+                const result = await put(file.originalname, file.buffer, { access: 'public' });
+                return result.url;
+            }));
+
+            let imgdata = await analyzeImageWithOpenAI(fileUrls[0]);
+            console.log(data);
+
+
+            console.log(fileUrls);
+
+            return res.json({ urls: fileUrls });
+
+
         } catch (error) {
             console.log(error);
-            res.status(500).json({ msg: "internal server error.",error })
+            res.status(500).json({ msg: "internal server error.", error })
         }
     },
 
@@ -26,7 +37,7 @@ const LLM = {
         try {
 
             let { query, image } = req.body;
-            
+
             if (!query && !image) {
                 return res.status(200).json({ msg: "please proive a valid query or image" })
             }

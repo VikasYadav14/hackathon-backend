@@ -1,7 +1,13 @@
 const axios = require('axios');
 require('dotenv').config();
+const { Configuration, OpenAIApi } = require("openai");
 const openaiApiKey = process.env.OPENAI_API_KEY
 const endpoint = process.env.OPENAI_ENDPOINT
+
+const configuration = new Configuration({
+    apiKey: process.env.OPENAI_API_KEY,
+  });
+  const openai = new OpenAIApi(configuration);
 
 let gptResponse = {
 
@@ -35,31 +41,11 @@ let gptResponse = {
             const response = await openai.chat.completions.create({
                 model: "gpt-4o",
                 messages: [
-                    {
-                        role: "system",
-                        content: `Analyze the provided image and determine if it is an Aadhaar card front, Aadhaar card back, or PAN card. Then extract the relevant information as follows:
-                        If the image is an Aadhaar card front:
-                        
-                        Extract the employee's name
-                        Extract the mobile number
-                        Extract the date of birth
-                        Extract the gender
-                        Extract the Aadhaar number
-                        
-                        If the image is an Aadhaar card back:
-                        
-                        Extract the employee's address
-                        
-                        If the image is a PAN card:
-                        
-                        Extract only the PAN number
-                    
-                        Provide the extracted information in a clear, organized format.`
-                    },
+
                     {
                         role: "user",
                         content: [
-                            { type: "text", text: "What’s in this image?" },
+                            { type: "text", text: "What’s in this images?" },
                             {
                                 type: "image_url",
                                 image_url: { url: imageUrl },
