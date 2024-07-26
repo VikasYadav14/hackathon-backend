@@ -2,6 +2,20 @@ let { gptResponse } = require('../services/LLM');
 
 const LLM = {
 
+    imageRec: async (req,res)=>{
+        try {
+
+        let {aadharFront, aadharBack , pan, photo} = req.file;
+
+        // AWS SET send image to aws get URL
+
+            return res.send({msg: "imge REc api"})
+        } catch (error) {
+            console.log(error);
+            res.status(500).json({ msg: "internal server error.",error })
+        }
+    },
+
     aiResponse: async (req, res) => {
         try {
 
