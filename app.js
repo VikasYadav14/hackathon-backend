@@ -9,7 +9,7 @@ const cors = require('cors');
 const PORT = process.env.PORT;
 
 app.use(bodyParser.json())
-
+app.use(cors());
 app.use('/api', require('./src/routes'));
 
 app.listen(PORT, (err) => {
