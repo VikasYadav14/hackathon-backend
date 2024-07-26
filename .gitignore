@@ -16,3 +16,4 @@ node_modules
 # Ignore all pdf files
 *.pdf
 package-lock.json
+.vercel
