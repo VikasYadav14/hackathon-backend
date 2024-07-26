@@ -11,15 +11,13 @@ const LLM = {
                 return res.status(400).send('No files uploaded.');
             }
 
-            console.log(files);
-            // Extract URLs of all uploaded files
             const fileUrls = await Promise.all(files.map(async file => {
                 const result = await put(file.originalname, file.buffer, { access: 'public' });
                 return result.url;
             }));
 
             let imgdata = await analyzeImageWithOpenAI(fileUrls[0]);
-            console.log(data);
+            console.log(imgdata);
 
 
             console.log(fileUrls);
