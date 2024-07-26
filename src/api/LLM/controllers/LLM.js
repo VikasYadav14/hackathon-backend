@@ -5,11 +5,17 @@ const LLM = {
     imageRec: async (req,res)=>{
         try {
 
-        let {aadharFront, aadharBack , pan, photo} = req.file;
+      
+            if (!req.files || req.files.length === 0) {
+                return res.status(400).send('No files uploaded.');
+              }
+              
+              // Extract URLs of all uploaded files
+              const fileUrls = req.files.map(file => file.location);
+              
+              return res.json({ urls: fileUrls });
 
-        // AWS SET send image to aws get URL
-
-            return res.send({msg: "imge REc api"})
+            
         } catch (error) {
             console.log(error);
             res.status(500).json({ msg: "internal server error.",error })

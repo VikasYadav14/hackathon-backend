@@ -7,7 +7,7 @@ let gptResponse = {
 
     gptResponse: async (messages) => {
         try {
-            
+
             const data = {
                 model: 'gpt-4o',
                 messages: messages,
@@ -30,21 +30,48 @@ let gptResponse = {
         }
     },
 
-    imageResponse: async (img) => {
+    analyzeImageWithOpenAI: async (imageUrl) => {
         try {
-            
-            // set up AWS
-
-            // upload image to AWS GET URL 
-
-            // write system promtp
-
-            // give url to gpt 
-
-
-
+            const response = await openai.chat.completions.create({
+                model: "gpt-4o",
+                messages: [
+                    {
+                        role: "system",
+                        content: `Analyze the provided image and determine if it is an Aadhaar card front, Aadhaar card back, or PAN card. Then extract the relevant information as follows:
+                        If the image is an Aadhaar card front:
+                        
+                        Extract the employee's name
+                        Extract the mobile number
+                        Extract the date of birth
+                        Extract the gender
+                        Extract the Aadhaar number
+                        
+                        If the image is an Aadhaar card back:
+                        
+                        Extract the employee's address
+                        
+                        If the image is a PAN card:
+                        
+                        Extract only the PAN number
+                    
+                        Provide the extracted information in a clear, organized format.`
+                    },
+                    {
+                        role: "user",
+                        content: [
+                            { type: "text", text: "What’s in this image?" },
+                            {
+                                type: "image_url",
+                                image_url: { url: imageUrl },
+                            },
+                        ],
+                    },
+                ],
+            });
+            return response.choices[0].message.content;
         } catch (error) {
-            
+            console.error(`Error analyzing image:`, error.response ? error.response.data : error.message);
+            return null;
         }
     },
 
@@ -118,7 +145,7 @@ let gptResponse = {
             }
         }
     }
-    
+
 
 };
 
