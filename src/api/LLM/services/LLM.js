@@ -1,13 +1,18 @@
 const axios = require('axios');
 require('dotenv').config();
+const OpenAI = require("openai");
 const openaiApiKey = process.env.OPENAI_API_KEY
 const endpoint = process.env.OPENAI_ENDPOINT
+
+const openai = new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY,
+  });
 
 let gptResponse = {
 
     gptResponse: async (messages) => {
         try {
-            
+
             const data = {
                 model: 'gpt-4o',
                 messages: messages,
@@ -27,6 +32,19 @@ let gptResponse = {
         } catch (error) {
             console.log(error);
             throw new Error('Failed to get response from OpenAI API');
+        }
+    },
+
+    analyzeImageWithOpenAI: async (message) => {
+        try {
+            const response = await openai.chat.completions.create({
+                model: "gpt-4o",
+                messages: message,
+            });
+            return response.choices[0].message.content;
+        } catch (error) {
+            console.error(`Error analyzing image:`, error.response ? error.response.data : error.message);
+            return null;
         }
     },
 
@@ -100,7 +118,7 @@ let gptResponse = {
             }
         }
     }
-    
+
 
 };
 
