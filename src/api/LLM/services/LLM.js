@@ -30,6 +30,24 @@ let gptResponse = {
         }
     },
 
+    imageResponse: async (img) => {
+        try {
+            
+            // set up AWS
+
+            // upload image to AWS GET URL 
+
+            // write system promtp
+
+            // give url to gpt 
+
+
+
+        } catch (error) {
+            
+        }
+    },
+
     gptStreamResponse: async (messages, res) => {
         try {
             const data = {

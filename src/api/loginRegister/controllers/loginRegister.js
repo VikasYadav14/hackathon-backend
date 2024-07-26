@@ -1,6 +1,5 @@
 const db = require('../../../../config/dbConnection')
 const User = require('../../../../config/models/Users');
-const cores = require('cors');
 const bcrypt = require('bcrypt');
 require('dotenv').config();
 const jwt = require('jsonwebtoken');
