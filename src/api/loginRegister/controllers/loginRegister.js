@@ -7,7 +7,8 @@ const jwt_Secret = process.env.JWT_SECRET
 
 
 const loginRegister = {
-
+     
+    //register api
     register: async (req, res) => {
         try {
 
@@ -39,7 +40,8 @@ const loginRegister = {
             throw error;
         }
     },
-
+    
+    //login api
     logIn: async (req, res) => {
         try {
 
