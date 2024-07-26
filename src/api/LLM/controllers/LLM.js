@@ -32,11 +32,13 @@ const LLM = {
                                     Extract the date of birth
                                     Extract the gender
                                     Extract the Aadhaar number
-
-
+                                    
+                                    
                                     If the image is an Aadhaar card back:
-
+                                    
                                     Extract the employee's address
+                                    Extract the Father Name
+                                    Extract the Address
 
 
                                     If the image is a PAN card:
@@ -54,6 +56,7 @@ const LLM = {
                                     'aadharNumber': <value>,
                                     'employeesAddress': <value>,
                                     'PANNumber': <value>
+                                    'fatherName': <value>
                                     }
                                 If a value is not available or not applicable for the given card type, set the value to null. Ensure all fields are included in the JSON output, even if they are null.`
                     },
