@@ -1,25 +1,26 @@
-const db = require('../../../../config/dbConnection')
+const db = require('../../../../config/dbConnection');
 const User = require('../../../../config/models/Users');
 const bcrypt = require('bcrypt');
 require('dotenv').config();
 const jwt = require('jsonwebtoken');
-const jwt_Secret = process.env.JWT_SECRET
-
+const jwt_Secret = process.env.JWT_SECRET;
 
 const loginRegister = {
 
     //register api
     register: async (req, res) => {
         try {
-            const { email, password } = req.body;
+            const { email, password, fullname, phone } = req.body;
 
             let user = await User.findOne({ email });
-            if (user) return res.status(400).json('User already exists.')
+            if (user) return res.status(400).json('User already exists.');
 
             user = new User({
                 email,
-                password
-            })
+                password,
+                fullname,
+                phone
+            });
 
             await user.save();
 
@@ -30,7 +31,7 @@ const loginRegister = {
                 },
             };
 
-            const token = await jwt.sign(payload, jwt_Secret, { expiresIn: 3600 })
+            const token = await jwt.sign(payload, jwt_Secret, { expiresIn: 3600 });
             if (!token) throw console.error("no token has been generated.");
             return res.status(201).json({ token });
 
@@ -60,7 +61,7 @@ const loginRegister = {
                 },
             };
 
-            const token = await jwt.sign(payload, jwt_Secret, { expiresIn: 3600 })
+            const token = await jwt.sign(payload, jwt_Secret, { expiresIn: 3600 });
             if (!token) throw console.error("no token has been generated.");
             return res.status(201).json({ token });
 
@@ -69,9 +70,18 @@ const loginRegister = {
             console.log(error);
             throw error;
         }
+    },
+    listUsers: async (req, res) => {
+        try {
+            const users = await User.find();
+            return res.status(200).json(users);
+        } catch (error) {
+            console.log(error);
+            return res.status(500).json({ msg: "Server error" });
+        }
     }
 
 
-}
+};
 
-module.exports = loginRegister
+module.exports = loginRegister;
