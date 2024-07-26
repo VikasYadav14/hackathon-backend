@@ -11,6 +11,7 @@ const LLM = {
                 return res.status(400).send('No files uploaded.');
             }
 
+            console.log(files);
             const fileUrls = await Promise.all(files.map(async file => {
                 const result = await put(file.originalname, file.buffer, { access: 'public' });
                 return result.url;
