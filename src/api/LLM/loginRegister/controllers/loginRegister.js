@@ -10,13 +10,13 @@ const loginRegister = {
     register: async (req, res) => {
         try {
 
-            const { email, password } = req.body;
+            const { username, password } = req.body;
 
-            let user = await User.findOne({ email });
+            let user = await User.findOne({ username });
             if (user) return res.status(400).json('User already exists.')
 
             user = new User({
-                email,
+                username,
                 password
             })
 
@@ -42,9 +42,9 @@ const loginRegister = {
     logIn: async (req, res) => {
         try {
 
-            let {email, password} = req.body;
+            let {username, password} = req.body;
 
-            let user = await User.findOne({email});
+            let user = await User.findOne({username});
 
             if(!user)  return res.status(200).json({msg: "user do not exists."});
 
