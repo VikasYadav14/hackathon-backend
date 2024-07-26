@@ -1,8 +1,9 @@
-const db = require('../../../../config/dbConnection');
+const db = require('../../../../config/dbConnection')
 const User = require('../../../../config/models/Users');
+const bcrypt = require('bcrypt');
 require('dotenv').config();
 const jwt = require('jsonwebtoken');
-const jwt_Secret = process.env.JWT_SECRET;
+const jwt_Secret = process.env.JWT_SECRET
 
 
 const loginRegister = {
@@ -13,24 +14,23 @@ const loginRegister = {
             const { email, password } = req.body;
 
             let user = await User.findOne({ email });
-
-            if (user) return res.status(400).json('User already exists.');
+            if (user) return res.status(400).json('User already exists.')
 
             user = new User({
                 email,
                 password
-            });
+            })
 
             await user.save();
 
             // for it sign in write after it get register so 
             const payload = {
                 user: {
-                    id: user.id,
+                    id: user.email,
                 },
             };
 
-            const token = await jwt.sign(payload, jwt_Secret, { expiresIn: 3600 });
+            const token = await jwt.sign(payload, jwt_Secret, { expiresIn: 3600 })
             if (!token) throw console.error("no token has been generated.");
             return res.status(201).json({ token });
 
@@ -39,39 +39,37 @@ const loginRegister = {
             throw error;
         }
     },
-    login: async (req, res) => {
+
+    logIn: async (req, res) => {
         try {
 
-            const { email, password } = req.body;
+            let {email, password} = req.body;
 
-            let user = await User.findOne({ email });
-            if (!user) return res.status(400).json('Invalid Credentials.');
+            let user = await User.findOne({email});
+
+            if(!user)  return res.status(200).json({msg: "user do not exists."});
+
+            let isMatch = await bcrypt.compare(password,user.password);
+            if(!isMatch) return res.status(200).json({msg: "password didn't match. please try again"});
 
             const payload = {
                 user: {
-                    id: user.id,
+                    id: user.email,
                 },
             };
 
-            const token = await jwt.sign(payload, jwt_Secret, { expiresIn: 3600 });
+            const token = await jwt.sign(payload, jwt_Secret, { expiresIn: 3600 })
             if (!token) throw console.error("no token has been generated.");
             return res.status(201).json({ token });
+
 
         } catch (error) {
             console.log(error);
             throw error;
         }
-    },
-    health: async (req, res) => {
-        try {
-            console.log({ msg: "Api is working." });
-            res.status(200).json({ msg: "Api is working Fine." });
-        } catch (error) {
-            console.log(error);
-            res.status(500).json({ msg: "internal server error." });
-        }
     }
 
-};
 
-module.exports = loginRegister;
+}
+
+module.exports = loginRegister
