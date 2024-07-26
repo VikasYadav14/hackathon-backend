@@ -15,16 +15,20 @@ const transporter = Nodemailer.createTransport({
     },
 });
 
-// app.post('/send-email',
 const mailer = {
     newmailer: async (req, res) => {
-        const { to } = req.body;
+        try {
+            console.log({
+                user: process.env.EMAIL_APP_NAME,
+                pass: process.env.EMAIL_PASSWORD,
+            });
+            const { to } = req.body;
 
-        const mailOptions = {
-            from: 'vikas14nov2001@gmail.com',
-            to: to,
-            subject: 'Welcome to Wattmonk Technologies, Your Organizational Email and Next Steps',
-            html: `<!DOCTYPE html>
+            const mailOptions = {
+                from: 'jinar999@gmail.com',
+                to: to,
+                subject: 'Welcome to Wattmonk Technologies, Your Organizational Email and Next Steps',
+                html: `<!DOCTYPE html>
             <html lang="en">
             <head>
                 <meta charset="UTF-8">
@@ -119,25 +123,24 @@ const mailer = {
                 </div>
             </body>
             </html>`,
-        };
+            };
 
-        transporter.sendMail(mailOptions, (error, done) => {
-            if (error) {
-                return res.status(500).send(error.message);
-            }
+            await transporter.sendMail(mailOptions);
             return res.status(200).send('Email sent successfully');
-        });
+        } catch (error) {
+            console.error('Error sending email:', error);
+            return res.status(500).send('Internal Server Error');
+        }
     },
     healthmail: async (req, res) => {
         try {
-            console.log({ msg: "Mail api is working." });
-            res.status(200).json({ msg: "mail api is working." });
+            console.log({ msg: "Mail API is working." });
+            res.status(200).json({ msg: "Mail API is working." });
         } catch (error) {
-            console.log(error);
-            res.status(500).json({ msg: "internal server error." });
+            console.error('Error in health check:', error);
+            res.status(500).json({ msg: "Internal Server Error" });
         }
     }
-
 };
-module.exports = mailer
 
+module.exports = mailer;
