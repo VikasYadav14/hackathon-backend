@@ -1,9 +1,11 @@
 const db = require('../../../../config/dbConnection')
 const User = require('../../../../config/models/Users');
+const cores = require('cors');
 const bcrypt = require('bcrypt');
 require('dotenv').config();
 const jwt = require('jsonwebtoken');
 const jwt_Secret = process.env.JWT_SECRET
+
 
 const loginRegister = {
 
