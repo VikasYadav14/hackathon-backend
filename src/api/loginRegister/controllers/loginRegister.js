@@ -7,11 +7,10 @@ const jwt_Secret = process.env.JWT_SECRET
 
 
 const loginRegister = {
-     
+
     //register api
     register: async (req, res) => {
         try {
-
             const { email, password } = req.body;
 
             let user = await User.findOne({ email });
@@ -40,19 +39,20 @@ const loginRegister = {
             throw error;
         }
     },
-    
+
     //login api
     logIn: async (req, res) => {
         try {
 
-            let {email, password} = req.body;
+            let { email, password } = req.body;
+            console.log(email, password);
 
-            let user = await User.findOne({email});
+            let user = await User.findOne({ email });
 
-            if(!user)  return res.status(200).json({msg: "user do not exists."});
+            if (!user) return res.status(200).json({ msg: "user do not exists." });
 
-            let isMatch = await bcrypt.compare(password,user.password);
-            if(!isMatch) return res.status(200).json({msg: "password didn't match. please try again"});
+            let isMatch = await bcrypt.compare(password, user.password);
+            if (!isMatch) return res.status(200).json({ msg: "password didn't match. please try again" });
 
             const payload = {
                 user: {
