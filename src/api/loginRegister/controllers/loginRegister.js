@@ -13,6 +13,7 @@ const loginRegister = {
             const { email, password } = req.body;
 
             let user = await User.findOne({ email });
+
             if (user) return res.status(400).json('User already exists.');
 
             user = new User({
@@ -44,16 +45,8 @@ const loginRegister = {
             const { email, password } = req.body;
 
             let user = await User.findOne({ email });
-            if (user) return res.status(400).json('User already exists.');
+            if (!user) return res.status(400).json('Invalid Credentials.');
 
-            user = new User({
-                email,
-                password
-            });
-
-            await user.save();
-
-            // for it sign in write after it get register so 
             const payload = {
                 user: {
                     id: user.id,
