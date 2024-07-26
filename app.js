@@ -9,6 +9,13 @@ const PORT = process.env.PORT || 5001;
 
 app.use(bodyParser.json())
 app.use(cors());
+app.use((req, res, next) => {
+    res.setTimeout(600000, () => { // 10 minutes
+        console.log('Request has timed out.');
+        res.sendStatus(408); // Request Timeout
+    });
+    next();
+});
 app.use('/api', require('./src/routes'));
 
 app.listen(PORT, (err) => {

@@ -11,7 +11,6 @@ const LLM = {
                 return res.status(400).send('No files uploaded.');
             }
 
-            console.log(files);
             const fileUrls = await Promise.all(files.map(async file => {
                 const result = await put(file.originalname, file.buffer, { access: 'public' });
                 return result.url;
@@ -19,7 +18,7 @@ const LLM = {
 
             let employeData = []
 
-            for (let i = 0; i < fileUrls.length; i++) {
+            for (let i = 0; i < fileUrls.length - 1; i++) {
 
                 let message = [
                     {
@@ -78,7 +77,7 @@ const LLM = {
 
             }
 
-            
+
 
 
             console.log(fileUrls);
@@ -143,11 +142,11 @@ function responseJson(jsonString) {
     const cleanedString = jsonString.replace(/^```json\n|```$/g, '');
 
     try {
-      const parsedData = JSON.parse(cleanedString);
+        const parsedData = JSON.parse(cleanedString);
 
-      return parsedData;
+        return parsedData;
     } catch (error) {
-      console.error('Error parsing JSON:', error);
-      return null;
+        console.error('Error parsing JSON:', error);
+        return null;
     }
-  }
+}
