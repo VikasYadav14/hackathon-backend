@@ -1,7 +1,6 @@
 const express = require('express');
 const app = express();
 require('dotenv').config();
-const http = require('http').createServer(app);
 const db = require('./config/dbConnection')
 const bodyParser = require('body-parser');
 
@@ -11,7 +10,7 @@ app.use(bodyParser.json())
 
 app.use('/api', require('./src/routes'));
 
-http.listen(PORT, (err) => {
+app.listen(PORT, (err) => {
     console.log(PORT);
     err ?
         console.log(`connection failed at port: ${PORT}`)
@@ -19,3 +18,5 @@ http.listen(PORT, (err) => {
         console.log(`connction successful port: ${PORT}`);
     console.log(PORT);
 })
+
+module.exports = app;
