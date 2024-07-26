@@ -10,14 +10,16 @@ const loginRegister = {
     //register api
     register: async (req, res) => {
         try {
-            const { email, password } = req.body;
+            const { email, password, fullname, phone } = req.body;
 
             let user = await User.findOne({ email });
             if (user) return res.status(400).json('User already exists.');
 
             user = new User({
                 email,
-                password
+                password,
+                fullname,
+                phone
             });
 
             await user.save();
