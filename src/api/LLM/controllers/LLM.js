@@ -1,6 +1,9 @@
-let { gptResponse, analyzeImageWithOpenAI } = require('../services/LLM');
+const { gptResponse, analyzeImageWithOpenAI } = require('../services/LLM');
 const { put } = require("@vercel/blob");
-
+const pdf = require('pdf-poppler');
+const sharp = require('sharp');
+const path = require('path');
+const fs = require('fs');
 const LLM = {
 
     imageRec: async (req, res) => {
@@ -12,6 +15,39 @@ const LLM = {
             }
 
             const fileUrls = await Promise.all(files.map(async file => {
+
+                let fileBuffer = file.buffer;
+
+                if (file.mimetype === 'image/png') {
+                    fileBuffer = await sharp(file.buffer).jpeg().toBuffer();
+                } else if (file.mimetype === 'application/pdf') {
+                    const originalNameWithoutExt = path.basename(file.originalname, path.extname(file.originalname));
+                    const tempPdfPath = path.join(__dirname, `../../../../uploads/pdfData/${originalNameWithoutExt}.pdf`);
+                    const tempJpegPath = path.join(__dirname, `../../../../uploads/imgData/${originalNameWithoutExt}.jpeg`);
+
+                    fs.writeFileSync(tempPdfPath, file.buffer);
+
+                    const options = {
+                        format: 'jpg',
+                        out_dir: path.dirname(tempJpegPath),
+                        out_prefix: originalNameWithoutExt,
+                        page: null
+                    };
+
+                    let convertedImg = await pdf.convert(tempPdfPath, options);
+                    console.log(convertedImg);
+
+                   
+                    const newFilename = addSuffixToFilename(tempJpegPath, '-1');
+                    console.log(newFilename); 
+
+                    fileBuffer = fs.readFileSync(newFilename); // Use the path of the converted image
+
+                    fs.unlinkSync(tempPdfPath);
+                    fs.unlinkSync(newFilename); // Unlink the converted image file
+                }
+
+
                 const result = await put(file.originalname, file.buffer, { access: 'public' });
                 return result.url;
             }));
@@ -152,4 +188,15 @@ function responseJson(jsonString) {
         console.error('Error parsing JSON:', error);
         return null;
     }
+}
+
+function addSuffixToFilename(filename, suffix) {
+    const extensionIndex = filename.lastIndexOf('.');
+    if (extensionIndex === -1) {
+        return `${filename}${suffix}`;
+    }
+    
+    const name = filename.substring(0, extensionIndex);
+    const extension = filename.substring(extensionIndex);
+    return `${name}${suffix}${".jpg"}`;
 }
