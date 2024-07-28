@@ -23,6 +23,14 @@ const UserSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  casualLeave: {
+    type: Number,
+    default: 18
+  },
+  earnedLeave: {
+    type : Number,
+    default: 14
+  }
 });
 
 UserSchema.pre('save', async function (next) {
